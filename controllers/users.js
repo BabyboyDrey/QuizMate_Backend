@@ -35,19 +35,12 @@ router.post(
       };
 
       await User.create(user);
-      res;
-      res
-        .cookie("user", userToken, {
-          sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          maxAge: 24 * 60 * 60 * 1000, // 1 day
-        })
-        .status(200)
-        .json({
-          success: true,
-          message: "User created successfully.",
-        });
+
+      res.status(200).json({
+        success: true,
+        message: "User created successfully.",
+        token: userToken,
+      });
     } catch (err) {
       res.status(500).json(`Error message encountered: ${err}`);
       console.log(err);
@@ -73,22 +66,14 @@ router.post(
         if (!validated) {
           return res.status(400).json("Wrong credentials, try again");
         } else {
-          res;
-          res
-            .cookie("user", userToken, {
-              sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-              httpOnly: true,
-              secure: process.env.NODE_ENV === "production",
-              maxAge: 24 * 60 * 60 * 1000, // 1 day
-            })
-            .status(200)
-            .json({
-              success: true,
-              user: foundUser,
-            });
+          res.status(200).json({
+            success: true,
+            user: foundUser,
+            token: userToken,
+          });
         }
       } else {
-        return res.status(400).json("User doesnt exist");
+        return res.status(400).json("User doesn't exist");
       }
     } catch (err) {
       res.status(500).json(`Err encountered: ${err}`);
